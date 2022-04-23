@@ -138,8 +138,8 @@ const getConfirmTransaction = async (txid) => {
 // require wsol to start trading, this function create your wsol account and fund 1 SOL to it
 await createWSolAccount();
 
-// initial 20 USDC for quote
-const initial = 20_000_000;
+// initial 50 USDC for quote
+const initial = 50_000_000;
 
 while (true) {
   // 0.1 SOL
