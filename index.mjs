@@ -29,6 +29,8 @@ const wallet = new Wallet(
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const SOL_MINT = "So11111111111111111111111111111111111111112";
 
+const PROFIT_BPS = 1.0023;
+
 // wsol account
 const createWSolAccount = async () => {
   const wsolAddress = await Token.getAssociatedTokenAddress(
