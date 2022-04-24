@@ -21,7 +21,7 @@ dotenv.config();
 
 // This is a free Solana RPC endpoint. It may have ratelimit and sometimes
 // invalid cache. I will recommend using a paid RPC endpoint.
-const connection = new Connection("https://solana-api.projectserum.com");
+const connection = new Connection("https://ssc-dao.genesysgo.net/");
 const wallet = new Wallet(
   Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || ""))
 );
