@@ -147,7 +147,7 @@ while (true) {
 
   const usdcToSol = await getCoinQuote(
     USDC_MINT,
-    SOLMINT,
+    SOL_MINT,
     solToUsdc.data[0].outAmount
   );
 
