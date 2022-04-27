@@ -139,22 +139,22 @@ const getConfirmTransaction = async (txid) => {
 await createWSolAccount();
 
 // initial 50 USDC for quote
-const initial = 50_000_000;
+const initial = 1;
 
 while (true) {
   // 0.1 SOL
-  const usdcToSol = await getCoinQuote(USDC_MINT, SOL_MINT, initial);
+  const solToUsdc = await getCoinQuote(SOL_MINT, USDC_MINT, initial);
 
-  const solToUsdc = await getCoinQuote(
-    SOL_MINT,
+  const usdcToSol = await getCoinQuote(
     USDC_MINT,
-    usdcToSol.data[0].outAmount
+    SOLMINT,
+    solToUsdc.data[0].outAmount
   );
 
   // when outAmount more than initial
-  if (solToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
+  if (usdcToSol.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
-      [usdcToSol.data[0], solToUsdc.data[0]].map(async (route) => {
+      [solToUsdc.data[0], usdcToSol.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
