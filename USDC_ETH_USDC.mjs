@@ -27,7 +27,7 @@ const wallet = new Wallet(
 );
 
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const WETH_MINT = "So11111111111111111111111111111111111111112";
+const WETH_MINT = "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs";
 
 const PROFIT_BPS = 1.0023;
 
