@@ -27,22 +27,22 @@ const wallet = new Wallet(
 );
 
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const ETHP_MINT = "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs";
+const WETH_MINT = "So11111111111111111111111111111111111111112";
 
 const PROFIT_BPS = 1.0023;
 
-// ethp account
-const createEthPAccount = async () => {
-  const ethpAddress = await Token.getAssociatedTokenAddress(
+// weth account
+const createWEthAccount = async () => {
+  const wethAddress = await Token.getAssociatedTokenAddress(
     ASSOCIATED_TOKEN_PROGRAM_ID,
     TOKEN_PROGRAM_ID,
-    new PublicKey(ETHP_MINT),
+    new PublicKey(WETH_MINT),
     wallet.publicKey
   );
 
-  const ethpAccount = await connection.getAccountInfo(ethpAddress);
+  const wethAccount = await connection.getAccountInfo(wethAddress);
 
-  if (!ethpAccount) {
+  if (!wethAccount) {
     const transaction = new Transaction({
       feePayer: wallet.publicKey,
     });
@@ -52,25 +52,25 @@ const createEthPAccount = async () => {
       await Token.createAssociatedTokenAccountInstruction(
         ASSOCIATED_TOKEN_PROGRAM_ID,
         TOKEN_PROGRAM_ID,
-        new PublicKey(ETHP_MINT),
-        ethpAddress,
+        new PublicKey(WETH_MINT),
+        wethAddress,
         wallet.publicKey,
         wallet.publicKey
       )
     );
 
-    // fund 0.1 ethp to the account
+    // fund 0.1 weth to the account
     instructions.push(
       SystemProgram.transfer({
         fromPubkey: wallet.publicKey,
-        toPubkey: ethpAddress,
-        lamports: 10_000_000, // 0.1 ethp
+        toPubkey: wethAddress,
+        lamports: 10_000_000, // 0.1 weth
       })
     );
 
     instructions.push(
       // This is not exposed by the types, but indeed it exists
-      Token.createSyncNativeInstruction(TOKEN_PROGRAM_ID, ethpAddress)
+      Token.createSyncNativeInstruction(TOKEN_PROGRAM_ID, wethAddress)
     );
 
     transaction.add(...instructions);
@@ -84,7 +84,7 @@ const createEthPAccount = async () => {
     console.log({ result });
   }
 
-  return ethpAccount;
+  return wethAccount;
 };
 
 const getCoinQuote = (inputMint, outputMint, amount) =>
@@ -135,26 +135,26 @@ const getConfirmTransaction = async (txid) => {
   return txid;
 };
 
-// require ethp to start trading, this function create your ethp account and fund 1 ETHP to it
-await createEthPAccount();
+// require weth to start trading, this function create your weth account and fund 1 WETH to it
+await createWEthAccount();
 
 // initial 50 USDC for quote
 const initial = 50_000_000;
 
 while (true) {
-  // 0.1 ETHP
-  const usdcToEthP = await getCoinQuote(USDC_MINT, ETHP_MINT, initial);
+  // 0.1 WETH
+  const usdcToWEth = await getCoinQuote(USDC_MINT, WETH_MINT, initial);
 
-  const ethpToUsdc = await getCoinQuote(
-    ETHP_MINT,
+  const wethToUsdc = await getCoinQuote(
+    WETH_MINT,
     USDC_MINT,
-    usdcToEthP.data[0].outAmount
+    usdcToWEth.data[0].outAmount
   );
 
   // when outAmount more than initial
-  if (ethpToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
+  if (wethToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
-      [usdcToEthP.data[0], ethpToUsdc.data[0]].map(async (route) => {
+      [usdcToWEth.data[0], wethToUsdc.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
