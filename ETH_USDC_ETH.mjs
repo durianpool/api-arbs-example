@@ -23,7 +23,7 @@ dotenv.config();
 // invalid cache. I will recommend using a paid RPC endpoint.
 const connection = new Connection("https://ssc-dao.genesysgo.net/");
 const wallet = new Wallet(
-  Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || ""))
+  Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY_2 || ""))
 );
 
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
@@ -143,18 +143,13 @@ const initial = 50_000_000;
 
 while (true) {
   // 0.1 WETH
-  const usdcToWEth = await getCoinQuote(USDC_MINT, WETH_MINT, initial);
-
-  const wethToUsdc = await getCoinQuote(
-    WETH_MINT,
-    USDC_MINT,
-    usdcToWEth.data[0].outAmount
-  );
+  const wethToUsdc = await getCoinQuote(WETH_MINT, USDC_MINT, initial);
+  const usdcToWEth = await getCoinQuote(USDC_MINT, WETH_MINT, wethToUsdc.data[0].outAmount);
 
   // when outAmount more than initial
-  if (wethToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
+  if (usdcToWEth.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
-      [usdcToWEth.data[0], wethToUsdc.data[0]].map(async (route) => {
+      [wethToUsdc.data[0], usdcToWEth.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
