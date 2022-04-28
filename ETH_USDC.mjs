@@ -138,11 +138,11 @@ const getConfirmTransaction = async (txid) => {
 // require weth to start trading, this function create your weth account and fund 1 WETH to it
 await createWethAccount();
 
-// initial 100 USDC for quote
-const initial = 100_000_000;
+// initial 200 USDC for quote
+const initial = 200_000_000;
 
-// initial 0.035 WETH for quote
-const initial_token = 3_500_000;
+// initial 0.07 WETH for quote
+const initial_token = 7_000_000;
 
 
 while (true) {
