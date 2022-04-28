@@ -32,7 +32,7 @@ const WETH_MINT = "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs";
 const PROFIT_BPS = 1.0023;
 
 // weth account
-const createWEthAccount = async () => {
+const createWethAccount = async () => {
   const wethAddress = await Token.getAssociatedTokenAddress(
     ASSOCIATED_TOKEN_PROGRAM_ID,
     TOKEN_PROGRAM_ID,
@@ -136,7 +136,7 @@ const getConfirmTransaction = async (txid) => {
 };
 
 // require weth to start trading, this function create your weth account and fund 1 WETH to it
-await createWEthAccount();
+await createWethAccount();
 
 // initial 0.035 WETH for quote
 const initial = 3_500_000;
@@ -144,12 +144,12 @@ const initial = 3_500_000;
 while (true) {
   // 0.1 WETH
   const wethToUsdc = await getCoinQuote(WETH_MINT, USDC_MINT, initial);
-  const usdcToWEth = await getCoinQuote(USDC_MINT, WETH_MINT, wethToUsdc.data[0].outAmount);
+  const usdcToWeth = await getCoinQuote(USDC_MINT, WETH_MINT, wethToUsdc.data[0].outAmount);
 
   // when outAmount more than initial
-  if (usdcToWEth.data[0].outAmount > initial*PROFIT_BPS) {
+  if (usdcToWeth.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
-      [wethToUsdc.data[0], usdcToWEth.data[0]].map(async (route) => {
+      [wethToUsdc.data[0], usdcToWeth.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
