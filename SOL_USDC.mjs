@@ -147,7 +147,7 @@ while (true) {
   const solToUsdc = await getCoinQuote(SOL_MINT, USDC_MINT, usdcToSol.data[0].outAmount);
   
   // when outAmount more than initial
-  if (solToUsdc.data[0].outAmount > initialUsdc*PROFIT_BPS) {
+  if (solToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
       [usdcToSol.data[0], solToUsdc.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
@@ -192,7 +192,7 @@ while (true) {
   const usdcToSol = await getCoinQuote(USDC_MINT, SOL_MINT, solToUsdc.data[0].outAmount);
 
   // when outAmount more than initial
-  if (usdcToSol.data[0].outAmount > initial*PROFIT_BPS) {
+  if (usdcToSol.data[0].outAmount > initial_token*PROFIT_BPS) {
     await Promise.all(
       [solToUsdc.data[0], usdcToSol.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
