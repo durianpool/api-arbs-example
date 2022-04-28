@@ -141,6 +141,9 @@ await createWSolAccount();
 // initial 100 USDC for quote
 const initial = 100_000_000;
 
+// initial 1 SOL for quote
+const initial_token = 1_000_000_000;
+
 while (true) {
   // 0.1 SOL
   const usdcToSol = await getCoinQuote(USDC_MINT, SOL_MINT, initial);
@@ -180,21 +183,15 @@ while (true) {
         );
       })
     );
-  }
-}
-
-// initial 1 SOL for quote
-const initial_token = 1_000_000_000;
-
-while (true) {
-  // 0.1 SOL
-  const solToUsdc = await getCoinQuote(SOL_MINT, USDC_MINT, initial_token);
-  const usdcToSol = await getCoinQuote(USDC_MINT, SOL_MINT, solToUsdc.data[0].outAmount);
+  };
+  
+  const solToUsdc_r = await getCoinQuote(SOL_MINT, USDC_MINT, initial_token);
+  const usdcToSol_r = await getCoinQuote(USDC_MINT, SOL_MINT, solToUsdc_r.data[0].outAmount);
 
   // when outAmount more than initial
-  if (usdcToSol.data[0].outAmount > initial_token*PROFIT_BPS) {
+  if (usdcToSol_r.data[0].outAmount > initial_token*PROFIT_BPS) {
     await Promise.all(
-      [solToUsdc.data[0], usdcToSol.data[0]].map(async (route) => {
+      [solToUsdc_r.data[0], usdcToSol_r.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
