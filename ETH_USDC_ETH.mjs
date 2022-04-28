@@ -23,7 +23,7 @@ dotenv.config();
 // invalid cache. I will recommend using a paid RPC endpoint.
 const connection = new Connection("https://ssc-dao.genesysgo.net/");
 const wallet = new Wallet(
-  Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY_2 || ""))
+  Keypair.fromSecretKey(bs58.decode(process.env.WETH_USDC_KEY || ""))
 );
 
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
