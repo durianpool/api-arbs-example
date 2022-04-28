@@ -141,6 +141,10 @@ await createWethAccount();
 // initial 100 USDC for quote
 const initial = 100_000_000;
 
+// initial 0.035 WETH for quote
+const initial_token = 3_500_000;
+
+
 while (true) {
   // 0.1 WETH
   const usdcToWeth = await getCoinQuote(USDC_MINT, WETH_MINT, initial);
@@ -155,6 +159,46 @@ while (true) {
   if (wethToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
       [usdcToWeth.data[0], wethToUsdc.data[0]].map(async (route) => {
+        const { setupTransaction, swapTransaction, cleanupTransaction } =
+          await getTransaction(route);
+
+        await Promise.all(
+          [setupTransaction, swapTransaction, cleanupTransaction]
+            .filter(Boolean)
+            .map(async (serializedTransaction) => {
+              // get transaction object from serialized transaction
+              const transaction = Transaction.from(
+                Buffer.from(serializedTransaction, "base64")
+              );
+              // perform the swap
+              // Transaction might failed or dropped
+              const txid = await connection.sendTransaction(
+                transaction,
+                [wallet.payer],
+                {
+                  skipPreflight: true,
+                }
+              );
+              try {
+                await getConfirmTransaction(txid);
+                console.log(`Success: https://solscan.io/tx/${txid}`);
+              } catch (e) {
+                console.log(`Failed: https://solscan.io/tx/${txid}`);
+              }
+            })
+        );
+      })
+    );
+  };
+
+  // 0.1 WETH
+  const wethToUsdc_r = await getCoinQuote(WETH_MINT, USDC_MINT, initial_token);
+  const usdcToWeth_r = await getCoinQuote(USDC_MINT, WETH_MINT, wethToUsdc_r.data[0].outAmount);
+
+  // when outAmount more than initial
+  if (usdcToWeth_r.data[0].outAmount > initial_token*PROFIT_BPS) {
+    await Promise.all(
+      [wethToUsdc_r.data[0], usdcToWeth_r.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
