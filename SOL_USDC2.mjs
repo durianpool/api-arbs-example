@@ -149,7 +149,7 @@ while (true) {
   // when outAmount more than initial
   if (solToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
-      usdcToSol.data[0].map(async (route) => {
+      [usdcToSol.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
@@ -181,7 +181,7 @@ while (true) {
       })
     );
     await Promise.all(
-      solToUsdc.data[0].map(async (route) => {
+      [solToUsdc.data[0]].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
