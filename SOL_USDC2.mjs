@@ -141,9 +141,6 @@ await createWSolAccount();
 // initial 100 USDC for quote
 const initial = 100_000_000;
 
-// initial 1 SOL for quote
-const initial_token = 1_000_000_000;
-
 while (true) {
   // 0.1 SOL
   const usdcToSol = await getCoinQuote(USDC_MINT, SOL_MINT, initial);
@@ -152,7 +149,7 @@ while (true) {
   // when outAmount more than initial
   if (solToUsdc.data[0].outAmount > initial*PROFIT_BPS) {
     await Promise.all(
-      [usdcToSol.data[0], solToUsdc.data[0]].map(async (route) => {
+      usdcToSol.data[0].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
@@ -175,23 +172,16 @@ while (true) {
               );
               try {
                 await getConfirmTransaction(txid);
-                console.log(`USDC_Success: https://solscan.io/tx/${txid}`);
+                console.log(`usdcToSol_Success: https://solscan.io/tx/${txid}`);
               } catch (e) {
-                console.log(`USDC_Failed: https://solscan.io/tx/${txid}`);
+                console.log(`usdcToSol_Failed: https://solscan.io/tx/${txid}`);
               }
             })
         );
       })
     );
-  };
-  
-  const solToUsdc_r = await getCoinQuote(SOL_MINT, USDC_MINT, initial_token);
-  const usdcToSol_r = await getCoinQuote(USDC_MINT, SOL_MINT, solToUsdc_r.data[0].outAmount);
-
-  // when outAmount more than initial
-  if (usdcToSol_r.data[0].outAmount > initial_token*PROFIT_BPS) {
     await Promise.all(
-      [solToUsdc_r.data[0], usdcToSol_r.data[0]].map(async (route) => {
+      solToUsdc.data[0].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
@@ -214,9 +204,9 @@ while (true) {
               );
               try {
                 await getConfirmTransaction(txid);
-                console.log(`TOKEN_Success: https://solscan.io/tx/${txid}`);
+                console.log(`solToUsdc_Success: https://solscan.io/tx/${txid}`);
               } catch (e) {
-                console.log(`TOKEN_Failed: https://solscan.io/tx/${txid}`);
+                console.log(`solToUsdc_Failed: https://solscan.io/tx/${txid}`);
               }
             })
         );
